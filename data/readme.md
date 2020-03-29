@@ -11,6 +11,17 @@ Currently, the metrics it has are:
 ## Usage
 
 - Clone this repo in full
-- Open terminal and navigate to this folder
-- run `> node compute_metrics`
+  ```
+  > git clone REPO_URL
+  ```
+- Clone/pull the latest inside `origin` folder submodule
+  ```
+  > cd origin
+  > git pull origin master
+  ```
+- Come back to this folder and run compute
+  ```
+  > cd ..
+  > node compute
+  ```
 - Check that the three files `confirmed.json`, `deaths.json`, `recovered.json` are updated.
