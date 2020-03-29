@@ -182,6 +182,59 @@ export default msg => payload => model => {
         },
         null
       ];
+    case Msg.ChangeBothCountries:
+      return [
+        {
+          ...model,
+          primary: {
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay(
+                payload.country.primary
+              )(confirmed),
+              newCasesByDate: annotateNewCasesByDate(
+                payload.country.primary
+              )(confirmed)
+            },
+            country: payload.country.primary,
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              payload.country.primary
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              payload.country.primary
+            )(confirmed),
+            newCasesByDate: newCasesByDate(payload.country.primary)(
+              confirmed
+            ),
+            newCasesByDay: newCasesByDay(payload.country.primary)(
+              confirmed
+            )
+          },
+          secondary: {
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay(
+                payload.country.secondary
+              )(confirmed),
+              newCasesByDate: annotateNewCasesByDate(
+                payload.country.secondary
+              )(confirmed)
+            },
+            country: payload.country.secondary,
+            newCasesByDay: newCasesByDay(payload.country.secondary)(
+              confirmed
+            ),
+            newCasesByDate: newCasesByDate(payload.country.secondary)(
+              confirmed
+            ),
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              payload.country.secondary
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              payload.country.secondary
+            )(confirmed)
+          }
+        },
+        null
+      ];
     default:
       return [model, null];
   }

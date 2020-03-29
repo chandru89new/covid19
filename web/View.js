@@ -169,10 +169,13 @@ const viewLogOption = dispatch => model => {
 
 export default dispatch => model => {
   window.onpopstate = ev => {
-    const country = new URL(window.location.href).pathname.split(
-      "/"
-    )[1];
-    dispatch(Msg.ChangeCountry)({ country });
+    const countries = window.location.pathname.split("/").slice(1);
+    dispatch(Msg.ChangeBothCountries)({
+      country: {
+        primary: window.decodeURI(countries[0]),
+        secondary: window.decodeURI(countries[1])
+      }
+    });
   };
   return div([
     div(".font-bold.text-xl.border-b.border-gray-200.pb-3.mb-5", [

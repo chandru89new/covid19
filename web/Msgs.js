@@ -4,5 +4,6 @@ export default {
   ChangePrimaryCountry: "changeprimarycountry",
   ChangeSecondaryCountry: "changesecondarycountry",
   ToggleLogScale: "togglelogscale",
-  LoadCountriesAndSetCountry: "loadcountriesandsetcountry"
+  LoadCountriesAndSetCountry: "loadcountriesandsetcountry",
+  ChangeBothCountries: "changebothcountries"
 };
