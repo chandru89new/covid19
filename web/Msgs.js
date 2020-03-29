@@ -1,7 +1,8 @@
 export default {
   CountriesLoaded: "countriesloaded",
   CountriesLoadFailed: "countriesloadfailed",
-  ChangeCountry: "changecountry",
+  ChangePrimaryCountry: "changeprimarycountry",
+  ChangeSecondaryCountry: "changesecondarycountry",
   ToggleLogScale: "togglelogscale",
   LoadCountriesAndSetCountry: "loadcountriesandsetcountry"
 };

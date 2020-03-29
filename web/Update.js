@@ -15,22 +15,31 @@ export default msg => payload => model => {
         {
           ...model,
           countries: payload.countries,
-          selectedCountry: payload.countries[0],
-          infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
-            payload.countries[0]
-          )(confirmed),
-          infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
-            payload.countries[0]
-          )(confirmed),
-          newCasesByDate: newCasesByDate(payload.countries[0])(
-            confirmed
-          ),
-          newCasesByDay: newCasesByDay(payload.countries[0])(
-            confirmed
-          ),
-          china: {
+          primary: {
+            country: payload.countries[0],
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              payload.countries[0]
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              payload.countries[0]
+            )(confirmed),
+            newCasesByDate: newCasesByDate(payload.countries[0])(
+              confirmed
+            ),
+            newCasesByDay: newCasesByDay(payload.countries[0])(
+              confirmed
+            )
+          },
+          secondary: {
+            country: "China",
             newCasesByDay: newCasesByDay("China")(confirmed),
-            newCasesByDate: newCasesByDate("China")(confirmed)
+            newCasesByDate: newCasesByDate("China")(confirmed),
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              "China"
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              "China"
+            )(confirmed)
           }
         },
         null
@@ -40,36 +49,77 @@ export default msg => payload => model => {
         {
           ...model,
           countries: payload.countries,
-          selectedCountry: payload.country,
-          infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
-            payload.country
-          )(confirmed),
-          infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
-            payload.country
-          )(confirmed),
-          newCasesByDate: newCasesByDate(payload.country)(confirmed),
-          newCasesByDay: newCasesByDay(payload.country)(confirmed),
-          china: {
-            newCasesByDay: newCasesByDay("China")(confirmed),
-            newCasesByDate: newCasesByDate("China")(confirmed)
+          primary: {
+            country: payload.country.primary,
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              payload.country.primary
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              payload.country.primary
+            )(confirmed),
+            newCasesByDate: newCasesByDate(payload.country.primary)(
+              confirmed
+            ),
+            newCasesByDay: newCasesByDay(payload.country.primary)(
+              confirmed
+            )
+          },
+          secondary: {
+            country: payload.country.secondary,
+            newCasesByDay: newCasesByDay(payload.country.secondary)(
+              confirmed
+            ),
+            newCasesByDate: newCasesByDate(payload.country.secondary)(
+              confirmed
+            ),
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              payload.country.secondary
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              payload.country.secondary
+            )(confirmed)
           }
         }
       ];
-    case Msg.ChangeCountry:
+    case Msg.ChangePrimaryCountry:
       return [
         {
           ...model,
-          selectedCountry: payload.country,
-          infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
-            payload.country
-          )(confirmed),
-          infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
-            payload.country
-          )(confirmed),
-          newCasesByDate: newCasesByDate(payload.country)(confirmed),
-          newCasesByDay: newCasesByDay(payload.country)(confirmed)
+          primary: {
+            country: payload.country,
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              payload.country
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              payload.country
+            )(confirmed),
+            newCasesByDate: newCasesByDate(payload.country)(
+              confirmed
+            ),
+            newCasesByDay: newCasesByDay(payload.country)(confirmed)
+          }
         },
-        Cmd.SetCountryAsPath({ country: payload.country })
+        null
+      ];
+    case Msg.ChangeSecondaryCountry:
+      return [
+        {
+          ...model,
+          secondary: {
+            country: payload.country,
+            infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
+              payload.country
+            )(confirmed),
+            infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
+              payload.country
+            )(confirmed),
+            newCasesByDate: newCasesByDate(payload.country)(
+              confirmed
+            ),
+            newCasesByDay: newCasesByDay(payload.country)(confirmed)
+          }
+        },
+        null
       ];
     case Msg.ToggleLogScale:
       return [

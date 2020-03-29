@@ -20,7 +20,10 @@ const renderGrowthByDateChart = model => {
       title: { text: "Percent" },
       min: null
     },
-    series: [model.infectionsRateOfGrowthByDate]
+    series: [
+      model.primary.infectionsRateOfGrowthByDate,
+      model.secondary.infectionsRateOfGrowthByDate
+    ]
   });
 };
 const renderNewCasesByDateChart = model => {
@@ -32,7 +35,10 @@ const renderNewCasesByDateChart = model => {
       type: "datetime",
       tickInterval: 7 * 24 * 3600 * 1000
     },
-    series: [model.newCasesByDate, model.china.newCasesByDate]
+    series: [
+      model.primary.newCasesByDate,
+      model.secondary.newCasesByDate
+    ]
   });
 };
 const renderNewCasesByDayChart = model => {
@@ -44,7 +50,10 @@ const renderNewCasesByDayChart = model => {
       ...getChartDefaults(model).tooltip,
       headerFormat: `<span style="font-size: 10px">Day {point.key}</span> <br />`
     },
-    series: [model.newCasesByDay, model.china.newCasesByDay]
+    series: [
+      model.primary.newCasesByDay,
+      model.secondary.newCasesByDay
+    ]
   });
 };
 const renderGrowthByDayChart = model => {
@@ -59,7 +68,10 @@ const renderGrowthByDayChart = model => {
       ...getChartDefaults(model).yAxis[0],
       title: { text: "Percent" }
     },
-    series: [model.infectionsRateOfGrowthByDay]
+    series: [
+      model.primary.infectionsRateOfGrowthByDay,
+      model.secondary.infectionsRateOfGrowthByDay
+    ]
   });
 };
 
@@ -125,19 +137,39 @@ export default dispatch => model => {
         {
           className: "ml-2",
           onchange: e =>
-            dispatch(Msg.ChangeCountry)({ country: e.target.value })
+            dispatch(Msg.ChangePrimaryCountry)({
+              country: e.target.value
+            })
         },
         model.countries.map(country =>
           option(
             {
               value: country,
-              selected: model.selectedCountry == country
+              selected: model.primary.country == country
             },
             country
           )
         )
       ),
-      span(" vs. China")
+      span(" vs. "),
+      select(
+        {
+          className: "ml-2",
+          onchange: e =>
+            dispatch(Msg.ChangeSecondaryCountry)({
+              country: e.target.value
+            })
+        },
+        model.countries.map(country =>
+          option(
+            {
+              value: country,
+              selected: model.secondary.country == country
+            },
+            country
+          )
+        )
+      )
     ]),
     viewLogOption(dispatch)(model),
     viewNewCasesByDay(dispatch)(model),
