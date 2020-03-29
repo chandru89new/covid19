@@ -12,7 +12,11 @@ const LoadCountriesAndSetCountry = ({ country }) => dispatch => {
 };
 
 const SetCountryAsPath = ({ country }) => dispatch => {
-  history.pushState(null, "index", `/${country}`);
+  history.pushState(
+    null,
+    "index",
+    `/${country.primary}/${country.secondary}`
+  );
 };
 
 export default {

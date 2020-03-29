@@ -2,9 +2,11 @@ import h from "virtual-dom/h";
 import hh from "hyperscript-helpers";
 const { div, label, select, option, pre, input, span, br } = hh(h);
 import Highcharts from "highcharts";
+import annotations from "highcharts/modules/annotations-advanced";
+annotations(Highcharts);
 import Msg from "./Msgs";
 import { getChartDefaults, allowNegativeLog } from "./helpers";
-// allowNegativeLog(Highcharts);
+allowNegativeLog(Highcharts);
 
 const renderGrowthByDateChart = model => {
   const hasElem = document.getElementById("growthByDate");
@@ -35,6 +37,27 @@ const renderNewCasesByDateChart = model => {
       type: "datetime",
       tickInterval: 7 * 24 * 3600 * 1000
     },
+    annotations: [
+      {
+        draggable: false,
+        labelOptions: {
+          allowOverlap: true,
+          shape: "connector",
+          align: "right",
+          justify: true,
+          crop: false,
+          style: {
+            fontSize: "0.8em",
+            textOutline: "1px white",
+            width: 100
+          }
+        },
+        labels: [].concat(
+          model.primary.annotations.newCasesByDate,
+          model.secondary.annotations.newCasesByDate
+        )
+      }
+    ],
     series: [
       model.primary.newCasesByDate,
       model.secondary.newCasesByDate
@@ -50,6 +73,27 @@ const renderNewCasesByDayChart = model => {
       ...getChartDefaults(model).tooltip,
       headerFormat: `<span style="font-size: 10px">Day {point.key}</span> <br />`
     },
+    annotations: [
+      {
+        draggable: false,
+        labelOptions: {
+          allowOverlap: true,
+          shape: "connector",
+          align: "right",
+          justify: true,
+          crop: false,
+          style: {
+            fontSize: "0.8em",
+            textOutline: "1px white",
+            width: 100
+          }
+        },
+        labels: [].concat(
+          model.primary.annotations.newCasesByDay,
+          model.secondary.annotations.newCasesByDay
+        )
+      }
+    ],
     series: [
       model.primary.newCasesByDay,
       model.secondary.newCasesByDay
@@ -151,7 +195,7 @@ export default dispatch => model => {
           )
         )
       ),
-      span(" vs. "),
+      span(" – "),
       select(
         {
           className: "ml-2",
@@ -180,7 +224,7 @@ export default dispatch => model => {
       `*The data starts from 22nd January, which is much later from the time China started recording the cases.`,
       br(),
       ` So, Day 1 for China is not really Day 1.`
-    ])
-    // pre(".text-xs.mt-10", JSON.stringify(model, null, 2))
+    ]),
+    pre(".text-xs.mt-10", JSON.stringify(model, null, 2))
   ]);
 };

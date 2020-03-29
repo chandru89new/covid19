@@ -52,6 +52,37 @@ export const newCasesByDay = country => rawData => {
   return R.pipe(R.find(match(country)), makeSeries)(rawData);
 };
 
+export const createAnnotationsByType = type => country => data => {
+  return R.pipe(
+    R.find(a => a.country == country),
+    R.prop("data"),
+    R.filter(a => a.annotations),
+    R.map(a => ({
+      point: {
+        xAxis: 0,
+        yAxis: 0,
+        x:
+          type === "date"
+            ? new Date(R.prop(type)(a)).getTime()
+            : R.prop(type)(a),
+        y: a.newIncidents
+      },
+      text: a.annotations
+    }))
+  )(data);
+};
+
+export const createAnnotationsForCountry = country => data => {
+  const TYPES = ["date", "dayNumber"];
+  const a = TYPES.map(a => createAnnotationsByType(a));
+  return a.reduce((acc, curr) => acc.concat(curr(country)(data)), []);
+};
+
+// export const createAnnotations = countries => data => {
+//   R.map(a => createAnnotationsForCountry(a))
+//   R.reduce((acc, curr) => acc.concat() ,[])
+// }
+
 export const getChartDefaults = model => ({
   chart: {
     type: "line"
@@ -60,10 +91,6 @@ export const getChartDefaults = model => ({
     enabled: false,
     text: ""
   },
-  xAxis: {
-    // type: "datetime",
-    // tickInterval: 7 * 24 * 3600 * 1000
-  },
   yAxis: [
     {
       min: !model.showLogarithmic ? 0 : null,
@@ -71,12 +98,6 @@ export const getChartDefaults = model => ({
       title: { text: "Numbers" },
       allowNegativeLog: true
     }
-    // {
-    //   type: model.showLogarithmic ? "logarithmic" : "linear",
-    //   opposite: true,
-    //   title: { text: "Numbers" },
-    //   allowNegativeLog: true
-    // }
   ],
   credits: {
     enabled: false
@@ -95,7 +116,22 @@ export const getChartDefaults = model => ({
         radius: 1
       }
     }
-  }
+  },
+  annotations: [
+    {
+      labelOptions: {
+        shape: "connector",
+        align: "right",
+        justify: false,
+        crop: true,
+        style: {
+          fontSize: "0.8em",
+          textOutline: "1px white",
+          width: 100
+        }
+      }
+    }
+  ]
 });
 
 export const allowNegativeLog = H => {

@@ -6,8 +6,12 @@ import {
   infectionsRateOfGrowthByDay,
   newCasesByDate,
   newCasesByDay,
-  filterCountries
+  createAnnotationsByType
 } from "./helpers";
+
+const annotateNewCasesByDay = createAnnotationsByType("dayNumber");
+const annotateNewCasesByDate = createAnnotationsByType("date");
+
 export default msg => payload => model => {
   switch (msg) {
     case Msg.CountriesLoaded:
@@ -16,21 +20,33 @@ export default msg => payload => model => {
           ...model,
           countries: payload.countries,
           primary: {
-            country: payload.countries[0],
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay("India")(
+                confirmed
+              ),
+              newCasesByDate: annotateNewCasesByDate("India")(
+                confirmed
+              )
+            },
+            country: "India",
             infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
-              payload.countries[0]
+              "India"
             )(confirmed),
             infectionsRateOfGrowthByDay: infectionsRateOfGrowthByDay(
-              payload.countries[0]
+              "India"
             )(confirmed),
-            newCasesByDate: newCasesByDate(payload.countries[0])(
-              confirmed
-            ),
-            newCasesByDay: newCasesByDay(payload.countries[0])(
-              confirmed
-            )
+            newCasesByDate: newCasesByDate("India")(confirmed),
+            newCasesByDay: newCasesByDay("India")(confirmed)
           },
           secondary: {
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay("China")(
+                confirmed
+              ),
+              newCasesByDate: annotateNewCasesByDate("China")(
+                confirmed
+              )
+            },
             country: "China",
             newCasesByDay: newCasesByDay("China")(confirmed),
             newCasesByDate: newCasesByDate("China")(confirmed),
@@ -50,6 +66,14 @@ export default msg => payload => model => {
           ...model,
           countries: payload.countries,
           primary: {
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay(
+                payload.country.primary
+              )(confirmed),
+              newCasesByDate: annotateNewCasesByDate(
+                payload.country.primary
+              )(confirmed)
+            },
             country: payload.country.primary,
             infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
               payload.country.primary
@@ -65,6 +89,14 @@ export default msg => payload => model => {
             )
           },
           secondary: {
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay(
+                payload.country.secondary
+              )(confirmed),
+              newCasesByDate: annotateNewCasesByDate(
+                payload.country.secondary
+              )(confirmed)
+            },
             country: payload.country.secondary,
             newCasesByDay: newCasesByDay(payload.country.secondary)(
               confirmed
@@ -79,7 +111,8 @@ export default msg => payload => model => {
               payload.country.secondary
             )(confirmed)
           }
-        }
+        },
+        Cmd.SetCountryAsPath({ country: payload.country })
       ];
     case Msg.ChangePrimaryCountry:
       return [
@@ -87,6 +120,11 @@ export default msg => payload => model => {
           ...model,
           primary: {
             country: payload.country,
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay(payload.country)(
+                confirmed
+              )
+            },
             infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
               payload.country
             )(confirmed),
@@ -99,7 +137,12 @@ export default msg => payload => model => {
             newCasesByDay: newCasesByDay(payload.country)(confirmed)
           }
         },
-        null
+        Cmd.SetCountryAsPath({
+          country: {
+            primary: payload.country,
+            secondary: model.secondary.country
+          }
+        })
       ];
     case Msg.ChangeSecondaryCountry:
       return [
@@ -107,6 +150,11 @@ export default msg => payload => model => {
           ...model,
           secondary: {
             country: payload.country,
+            annotations: {
+              newCasesByDay: annotateNewCasesByDay(payload.country)(
+                confirmed
+              )
+            },
             infectionsRateOfGrowthByDate: infectionsRateOfGrowthByDate(
               payload.country
             )(confirmed),
@@ -119,7 +167,12 @@ export default msg => payload => model => {
             newCasesByDay: newCasesByDay(payload.country)(confirmed)
           }
         },
-        null
+        Cmd.SetCountryAsPath({
+          country: {
+            primary: model.secondary.country,
+            secondary: payload.country
+          }
+        })
       ];
     case Msg.ToggleLogScale:
       return [

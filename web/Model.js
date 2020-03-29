@@ -1,7 +1,6 @@
 import Cmd from "./Commands";
 const url = new URL(window.location.href);
 const country = url.pathname.split("/").splice(1);
-console.log(country);
 export default [
   {
     countries: [],
@@ -20,11 +19,19 @@ export default [
       newCasesByDay: [],
       infectionsRateOfGrowthByDate: [],
       infectionsRateOfGrowthByDay: []
+    },
+    annotations: {
+      newCasesByDay: []
     }
   },
-  country && country.length
+  country && country.length === 2
     ? Cmd.LoadCountriesAndSetCountry({
-        country: { primary: country[0], secondary: country[1] }
+        country: {
+          primary: window.decodeURI(country[0]),
+          secondary: window.decodeURI(country[1])
+        }
       })
-    : Cmd.GetCountries()
+    : Cmd.LoadCountriesAndSetCountry({
+        country: { primary: "India", secondary: "China" }
+      })
 ];
