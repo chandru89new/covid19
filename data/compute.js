@@ -4,6 +4,7 @@ const SERIES_TYPES = require("./series-types");
 const updateRawData = require("./csv_to_json");
 const updateCountriesList = require("./compute_countries")
   .updateCountriesList;
+const ANNOTATIONS = require("./add_annotations");
 /**
 1. get seriesType
 2. read all data from file based on seriesType
@@ -79,19 +80,30 @@ excludeCountries excludeList list =
 computeMetricsForEachCountry : CountryData -> Series
 computeMetricsForEachCountry cd =
   let
-    metrics = calculateMetrics cd.data
+    annotations = getAnnotationsForCountry cd.country
+    metrics = calculateMetrics annotations cd.data
   in
     { country = cd.country, province = cd.province, cd.data = metrics }
 
-calculateMetrics : List SeriesData -> List MetricsData
-calculateMetrics data =
+type alias Annotation = { date: String, annotation: String }
+getAnnotationForCountry : String -> List Annotation
+getAnnotationsForCountry country =
+  let 
+    a = constants.ANNOTATIONS
+    b = List.filter (\x -> x.country == country) a
+  in
+    List.map (\x -> { date = x.date, annotation: x.annotation }) b
+
+calculateMetrics : List Annotation -> List SeriesData -> List MetricsData
+calculateMetrics notes data =
   let
     newIncidents : List { date: String, incidents: Number } -> List { date: String, incidents: Number, newIncidents: Number }
     diffInNewIncidents : List { date: String, incidents: Number, newIncidents: Number } -> List { date: String, incidents: Number, newIncidents: Number, diffInNewIncidents: Number }
     rateOfGrowthOfNewIncidents : List  { date: String, incidents: Number, newIncidents: Number, diffInNewIncidents: Number } -> List { date: String, incidents: Number, newIncidents: Number, diffInNewIncidents: Number, rateOfGrowth: Number }
     dayNumber : List { date: String, _: Any, ... } : List { date: String, dayNumber: Number, _: Any, ... }
+    addAnnotation : List Annotation -> List { date: String, incident: Number, _: Any } -> List { date: String, incident: Number, annotation: String, _: Any }
   in
-    data >> (newIncidents, diffInNewIncidents, rateOfGrowthOfNewIncidents, dayNumber)
+    data >> (newIncidents, diffInNewIncidents, rateOfGrowthOfNewIncidents, dayNumber, (addAnnotation notes))
 */
 
 const newIncidents = list => {
@@ -168,20 +180,37 @@ const getDayNumber = dateOfFirstIncident => currentDate => {
     : null;
 };
 
-const calculateMetrics = data => {
+const addAnnotations = annotations => data => {
+  return data.map(d => {
+    const a = R.filter(a => a.date === d.date)(annotations);
+    if (!a.length) return d;
+    return { ...d, annotations: R.prop("annotation")(a[0]) };
+  });
+};
+
+const calculateMetrics = annotations => data => {
   return R.pipe(
     newIncidents,
     diffInNewIncidents,
     rateOfGrowthOfNewIncidents,
-    dayNumber
+    dayNumber,
+    addAnnotations(annotations)
   )(data);
 };
 
+const getAnnotationForCountry = country => {
+  return R.pipe(
+    R.filter(a => a.country === country, R.__),
+    R.map(R.pick(["date", "annotation"]))
+  )(ANNOTATIONS);
+};
+
 const computeMetricsForEachCountry = countryData => {
+  const annotations = getAnnotationForCountry(countryData.country);
   return {
     country: countryData.country,
     province: countryData.province,
-    data: calculateMetrics(countryData.data)
+    data: calculateMetrics(annotations)(countryData.data)
   };
 };
 
@@ -260,5 +289,10 @@ run();
 // const sampleData = JSON.parse(
 //   fs.readFileSync("./raw/confirmed.json", "utf-8")
 // );
-// const cdc = JSON.stringify(computeMetricsForAllCountries(sampleData));
+// const f = R.filter(a => a.country == "Korea, South")(sampleData);
+// const cdc = R.pipe(
+//   R.find(a => a.country === "Korea, South"),
+//   computeMetricsForEachCountry,
+//   JSON.stringify
+// )(sampleData);
 // console.log(cdc);
