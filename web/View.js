@@ -1,6 +1,19 @@
 import h from "virtual-dom/h";
 import hh from "hyperscript-helpers";
-const { div, label, select, option, pre, input, span, br } = hh(h);
+const {
+  div,
+  label,
+  select,
+  option,
+  pre,
+  input,
+  span,
+  br,
+  li,
+  ol,
+  a,
+  hr
+} = hh(h);
 import Highcharts from "highcharts";
 import annotations from "highcharts/modules/annotations-advanced";
 annotations(Highcharts);
@@ -167,6 +180,29 @@ const viewLogOption = dispatch => model => {
   ]);
 };
 
+const viewCredits = () => {
+  return div(".text-xs.mt-5", [
+    hr(".mb-5"),
+    div(".font-bold.mb-2", "Credits:"),
+    div([
+      ol([
+        li([
+          "Main data source: ",
+          a(
+            { href: "https://github.com/CSSEGISandData/COVID-19" },
+            "Johns Hopkins CSSE"
+          ),
+          " which is derived from a bunch of official sources."
+        ]),
+        li([
+          "For comprehensive, India-specific details, visit: ",
+          a({ href: "http://covid19india.org" }, "Covid19India.org")
+        ])
+      ])
+    ])
+  ]);
+};
+
 export default dispatch => model => {
   window.onpopstate = ev => {
     const countries = window.location.pathname.split("/").slice(1);
@@ -227,7 +263,8 @@ export default dispatch => model => {
       `*The data starts from 22nd January, which is much later from the time China started recording the cases.`,
       br(),
       ` So, Day 1 for China is not really Day 1.`
-    ])
+    ]),
+    viewCredits()
     // pre(".text-xs.mt-10", JSON.stringify(model, null, 2))
   ]);
 };
