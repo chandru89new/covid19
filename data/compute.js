@@ -149,7 +149,7 @@ const rateOfGrowthOfNewIncidents = list => {
   });
 };
 
-// getDataOfIncident : List { date: String, } -> Date
+// getDataOfIncident : List { date: String, incidents: Number, _: Any } -> Maybe String
 const getDateOfIncident = list => {
   const a = R.propOr(null)("date")(list.find(r => r.incidents > 0));
   return a;
@@ -165,7 +165,7 @@ const dayNumber = list => {
   });
 };
 
-// getDayNumber : String -> String -> String
+// getDayNumber : Maybe String -> String -> Maybe Number
 const getDayNumber = dateOfFirstIncident => currentDate => {
   if (dateOfFirstIncident === null) return 0;
   const currDate = new Date(currentDate).getTime();
