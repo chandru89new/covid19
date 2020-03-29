@@ -15,6 +15,11 @@ const renderGrowthByDateChart = model => {
       type: "datetime",
       tickInterval: 7 * 24 * 3600 * 1000
     },
+    yAxis: {
+      ...getChartDefaults(model).yAxis[0],
+      title: { text: "Percent" },
+      min: null
+    },
     series: [model.infectionsRateOfGrowthByDate]
   });
 };
@@ -49,6 +54,10 @@ const renderGrowthByDayChart = model => {
     ...getChartDefaults(model),
     tooltip: {
       headerFormat: `<span style="font-size: 10px">Day {point.key}</span> <br />`
+    },
+    yAxis: {
+      ...getChartDefaults(model).yAxis[0],
+      title: { text: "Percent" }
     },
     series: [model.infectionsRateOfGrowthByDay]
   });
@@ -133,7 +142,7 @@ export default dispatch => model => {
     viewLogOption(dispatch)(model),
     viewNewCasesByDay(dispatch)(model),
     viewNewCasesByDate(dispatch)(model),
-    // viewGrowthRateChart(dispatch)(model),
+    viewGrowthRateChart(dispatch)(model),
     // viewGrowthRateByDayNumber(dispatch)(model),
     div(".text-xs.mt-5", [
       `*The data starts from 22nd January, which is much later from the time China started recording the cases.`,
