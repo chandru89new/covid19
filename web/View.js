@@ -224,7 +224,7 @@ export default dispatch => model => {
       `*The data starts from 22nd January, which is much later from the time China started recording the cases.`,
       br(),
       ` So, Day 1 for China is not really Day 1.`
-    ]),
-    pre(".text-xs.mt-10", JSON.stringify(model, null, 2))
+    ])
+    // pre(".text-xs.mt-10", JSON.stringify(model, null, 2))
   ]);
 };

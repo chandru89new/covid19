@@ -12,6 +12,7 @@ const LoadCountriesAndSetCountry = ({ country }) => dispatch => {
 };
 
 const SetCountryAsPath = ({ country }) => dispatch => {
+  console.log({ ...country });
   history.pushState(
     null,
     "index",

@@ -169,7 +169,7 @@ export default msg => payload => model => {
         },
         Cmd.SetCountryAsPath({
           country: {
-            primary: model.secondary.country,
+            primary: model.primary.country,
             secondary: payload.country
           }
         })
