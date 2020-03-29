@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/CSSEGISandData/COVID-19#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "d3-dsv": "^1.2.0",
     "fs": "^0.0.1-security",
     "highcharts": "^8.0.4",
