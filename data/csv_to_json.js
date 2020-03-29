@@ -26,7 +26,7 @@ const applyTransformation = data => {
 
 // generateJSON : String -> Void
 const generateJSON = seriesType => {
-  const file = `../csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_${seriesType}_global.csv`;
+  const file = `../origin/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_${seriesType}_global.csv`;
   const curriedRead = R.curry(fs.readFileSync);
   const d = R.pipe(
     curriedRead(R.__, "utf-8"),
@@ -34,7 +34,7 @@ const generateJSON = seriesType => {
     applyTransformation,
     JSON.stringify
   )(file);
-  const outFile = `./by_date_${seriesType}_global.json`;
+  const outFile = `./raw/${seriesType}.json`;
   fs.writeFileSync(outFile, d, "utf-8");
 };
 
