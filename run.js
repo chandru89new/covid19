@@ -2,7 +2,7 @@ const terminal = require("child_process").execSync;
 const COMMANDS_METRICS = [
   "cd origin && git pull origin master",
   "cd data && node compute",
-  "git add data",
+  "git add data/ origin/",
   'git commit -m "data update"',
   "git push origin master"
 ];
@@ -23,13 +23,17 @@ const main = () => {
 const run = runType => {
   switch (runType) {
     case "data":
-      runCommands(COMMANDS_METRICS)();
+      runCommands(COMMANDS_METRICS);
       break;
     case "website":
       runCommands(COMMANDS_WEBSITE);
       break;
+    case "help":
+      console.log("`node run data` to update data and git");
+      console.log("`node run website` to build website and deploy");
+      break;
     default:
-      return console.log("No run type given.");
+      return console.log("Invalid run argument.");
   }
 };
 
