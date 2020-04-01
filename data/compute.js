@@ -220,10 +220,18 @@ const computeMetricsForAllCountries = list => {
 };
 
 const mergeCountriesWithProvinces = list => {
-  const china = addUpByCountry("China")(list);
-  const aus = addUpByCountry("Australia")(list);
-  const rest = excludeCountries(["China", "Australia"])(list);
-  return [].concat(rest, aus, china);
+  const excludes = [
+    "China",
+    "Australia",
+    "Canada",
+    "United Kingdom",
+    "Netherlands",
+    "Denmark",
+    "France"
+  ];
+  const a = R.map(a => addUpByCountry(a)(list))(excludes);
+  const rest = excludeCountries(excludes)(list);
+  return [].concat(rest, ...a);
 };
 
 const addUpByCountry = country => list => {
