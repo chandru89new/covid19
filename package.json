@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "d3-dsv": "^1.2.0",
     "fs": "^0.0.1-security",
     "highcharts": "^8.0.4",
